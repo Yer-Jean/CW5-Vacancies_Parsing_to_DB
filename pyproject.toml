@@ -8,6 +8,7 @@ packages = [{include = "cw5_vacancies_parsing_to_db"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"
+requests = "^2.31.0"
 
 
 [build-system]
