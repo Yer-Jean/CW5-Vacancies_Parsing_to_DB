@@ -6,13 +6,13 @@ class MenuInteractionMixin:
         :param menu: Пункты меню.
         :return: Выбранная опция меню.
         """
-        # print('\n')
+        print('\nВыберите действие:')
         print('\n'.join([f"({key}) {value[0]}" for key, value in menu.items()]))
 
         while True:
-            choice: str = input('\nВыберите пункт меню: ')
+            choice: str = input('\nВведите пункт меню: ')
             if choice not in menu:
-                print('\nНеправильный выбор. Выберите один из доступных вариантов.')
+                print('\nНеправильный ввод. Выберите один из доступных вариантов.')
                 continue
             return choice
 
@@ -26,4 +26,4 @@ class MenuInteractionMixin:
                 case 'no':
                     return False
                 case _:
-                    print('\nНеправильный выбор. Выберите "yes" или "no"')
+                    print('\nНеправильный ввод. Выберите "yes" или "no"')

@@ -1,7 +1,7 @@
 from models.hh_api import HeadHunterAPI
 from models.menu_interaction_mixin import MenuInteractionMixin
-from settings import HH_API_EMPLOYERS_URL, REQUESTS_PARAMS
 from sql_models.db_manager import DBManager
+from utils.data_utils import search_employers, get_vacancies_from_employers
 
 
 class MainMenu(MenuInteractionMixin):
@@ -19,28 +19,18 @@ class MainMenu(MenuInteractionMixin):
             self.main_menu[self.choice][1]()
 
     def search_companies_and_get_vacancies(self):
-        data = []
+        # Создаем экземпляр класса для работы по API с сайтом headhunter.ru
         hh_api = HeadHunterAPI()
 
-        search_string = input('Введите запрос для поиска компаний (одно или несколько слов)\n'
-                              'Поиск осуществляется в названии компании и в её описании\n')
-        employers_request_params = REQUESTS_PARAMS['employers']
-        employers_request_params.update({'text': search_string})
-        employers = hh_api.get_data(url=HH_API_EMPLOYERS_URL, **employers_request_params)
-        print(f'Найдено {len(employers)} компаний')
+        employers = search_employers(hh_api)
+        if not employers:
+            return
 
-        vacancies_request_params = REQUESTS_PARAMS['vacancies']
-        for i in range(len(employers)):
-            vacancies = hh_api.get_data(url=employers[i]['vacancies_url'], **vacancies_request_params)
-            data.append({
-                'employers': employers[i],
-                'vacancies': vacancies
-            })
-        print(data)
+        employers_with_vacancies = get_vacancies_from_employers(hh_api, employers)
 
         # if self.confirm('Сохранить в базу данных?'):
-        #     self.db_manager.create_database('head_hunter')
-        #     # db_manager.save_to_database('head_hunter')
+        self.db_manager.create_database('head_hunter')
+        self.db_manager.save_data_to_database(employers_with_vacancies, 'head_hunter')
         #     # todo: Написать вызов функции сохранения данных из класса DBManager
         #     print('сохранить')
 

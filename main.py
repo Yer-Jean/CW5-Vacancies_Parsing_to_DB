@@ -3,11 +3,11 @@ from sql_models.db_manager import DBManager
 
 
 def main() -> None:
-    print('\nЭта программа получает список компаний и их вакансии с HeadHunter.ru\n')
+    print('\nЭта программа получает список компаний и их вакансии с HeadHunter.ru')
 
     # todo: Сделать запрос в БД и вытащить количество компаний и их вакансий
-    print('Сейчас в базе данных сохранены {N} компаний, которые разместили {M} вакансий\n')
-    db_manager = DBManager()
+    # print('Сейчас в базе данных сохранены {N} компаний, которые разместили {M} вакансий\n')
+    # db_manager = DBManager()
     main_menu = MainMenu()
     main_menu()
 
