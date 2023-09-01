@@ -7,41 +7,71 @@ from models.exceptions import GetRemoteDataException
 
 class HeadHunterAPI:
 
-    __hh_api_url = 'https://api.hh.ru/employers'
-    RESULTS_PER_PAGE = 10
+    def get_data(self, url, **params) -> list[dict] | None:
+        """Метод возвращает список записей в зависимости от параметров params
+        используя HeadHunter API. Возвращает список словарей с полученными записями"""
+        data: list[dict] = []
+        current_page: int = 0
+        start: bool = True
 
-    def get_employers(self, search_string) -> list[dict] | None:
-        """Метод возвращает список вакансий по заданному запросу search_string,
-        используя HeadHunter API. Возвращает список словарей с данными о вакансиях"""
-        employers = []
-        current_page = 0
-        request_params = {'type': 'company',
-                          'text': search_string,
-                          'per_page': self.RESULTS_PER_PAGE,
-                          'page': current_page,
-                          'sort_by': 'by_vacancies_open'}
-        # num_of_pages = 0
-        # num_of_employers = 0
+        while True:
+            try:  # Получаем данные о компаниях, используя HeadHunter API
+                response = self.get_remote_data(url=url, params=params)
+            except GetRemoteDataException as err:  # Если произошли ошибки, то возвращаем None
+                print(err.message)
+                print('Попробуйте немного позже или измените параметры запроса\n')
+                return None
 
-        try:  # Получаем данные о вакансиях используя HeadHunter API
-            data = self.get_remote_data(url=self.__hh_api_url, params=request_params)
-        except GetRemoteDataException as err:  # Если произошли ошибки, то возвращаем None
-            print(err.message)
-            print('Попробуйте немного позже или измените параметры запроса\n')
-            return None
+            if start:
+                num_of_pages: int = 1  # response['pages'] # Получаем количество страниц найденных записей
+                num_of_items: int = response['found']  # Получаем общее количество найденных записей
+                if num_of_items == 0:  # Если не найдена ни одна компаний, то возвращаем None
+                    return None
+                start = False
 
-        num_of_employers = data["found"]
-        if num_of_employers == 0:
-            print(f'По запросу "{search_string}" компании не найдены')
-            return None
+            # Из полученного ответа забираем только список записей
+            data.extend(response.get('items'))
 
-        print(f'Найдено {num_of_employers} компаний')
-        return data['items']
+            current_page += 1  # Переходим к следующей странице результатов
+            params.update({'page': current_page})
+            if current_page == num_of_pages + 1:    # Когда достигли последней страницы с записями
+                return data                         # возвращаем их список
 
     def get_vacancies(self, vacancies_url) -> list[dict] | None:
         """Метод возвращает список вакансий по указанному URL,
         используя HeadHunter API. Возвращает список словарей с данными о вакансиях"""
-        pass
+        data = []
+        current_page = 0
+        start = True
+        vacancies_request_params = {'per_page': self.VACANCIES_RESULTS_PER_PAGE,
+                                    'page': current_page}
+
+        while True:
+            try:
+                response = self.get_remote_data(url=vacancies_url, params=vacancies_request_params)
+            except GetRemoteDataException as err:  # Если произошли ошибки, то возвращаем None
+                print(err.message)
+                print('Попробуйте немного позже или измените параметры запроса\n')
+                return None
+
+            if start:
+                num_of_pages = response['pages']  # Получаем количество страниц найденных вакансий
+                num_of_vacancies = response['found']  # Получаем общее количество найденных вакансий
+                if num_of_vacancies == 0:  # Если не найдена ни одна вакансия, то возвращаем None
+                    return None
+                start = False
+                # print(f'Найдено {num_of_employers} вакансий')
+
+            # Из полученного ответа забираем только список вакансий
+            vacancies = response.get('items')
+
+            # И добавляем их в общий список
+            data.extend(vacancies)
+
+            current_page += 1  # Переходим к следующей странице результатов
+            vacancies_request_params.update({'page': current_page})
+            if current_page == num_of_pages + 1:    # Когда достигли последней страницы с вакансиями
+                return data                         # возвращаем их список
 
     @staticmethod
     def get_remote_data(**kwargs) -> dict | None:
