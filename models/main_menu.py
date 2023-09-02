@@ -1,5 +1,6 @@
 from models.hh_api import HeadHunterAPI
 from models.menu_interaction_mixin import MenuInteractionMixin
+from models.view_menu import ViewMenu
 from sql_models.db_manager import DBManager
 from utils.data_utils import search_employers, get_vacancies_from_employers
 
@@ -33,7 +34,8 @@ class MainMenu(MenuInteractionMixin):
         DBManager.save_data_to_database(employers_with_vacancies, 'head_hunter')
 
     def view_vacancies_from_db(self):
-        print('View')
+        view_menu = ViewMenu()
+        view_menu()
 
     def clear_vacancies(self):
         if self.confirm('Очистить?'):
