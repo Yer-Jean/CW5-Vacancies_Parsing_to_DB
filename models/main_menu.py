@@ -8,10 +8,10 @@ class MainMenu(MenuInteractionMixin):
     def __init__(self):
         self.choice = True
         self.main_menu = {'1': ('Поиск компаний и их вакансий', self.search_companies_and_get_vacancies),
-                          '2': ('Просмотр компаний и их вакансий', self.view_vacancies),
+                          '2': ('Просмотр компаний и их вакансий', self.view_vacancies_from_db),
                           # '3': ('Очистить старые данные', self.clear_vacancies),
                           '0': ('Выход из программы', self.quit)}
-        self.db_manager = DBManager()
+        # self.db_manager = DBManager()
 
     def __call__(self, *args, **kwargs):
         while self.choice:
@@ -28,13 +28,11 @@ class MainMenu(MenuInteractionMixin):
 
         employers_with_vacancies = get_vacancies_from_employers(hh_api, employers)
 
-        # if self.confirm('Сохранить в базу данных?'):
-        self.db_manager.create_database('head_hunter')
-        self.db_manager.save_data_to_database(employers_with_vacancies, 'head_hunter')
-        #     # todo: Написать вызов функции сохранения данных из класса DBManager
-        #     print('сохранить')
+        DBManager.create_database('head_hunter')
+        # self.db_manager.create_database('head_hunter')
+        DBManager.save_data_to_database(employers_with_vacancies, 'head_hunter')
 
-    def view_vacancies(self):
+    def view_vacancies_from_db(self):
         print('View')
 
     def clear_vacancies(self):
