@@ -29,9 +29,8 @@ class MainMenu(MenuInteractionMixin):
 
         employers_with_vacancies = get_vacancies_from_employers(hh_api, employers)
 
-        DBManager.create_database('head_hunter')
-        # self.db_manager.create_database('head_hunter')
-        DBManager.save_data_to_database(employers_with_vacancies, 'head_hunter')
+        DBManager.create_database()
+        DBManager.save_data_to_database(employers_with_vacancies)
 
     def view_vacancies_from_db(self):
         view_menu = ViewMenu()

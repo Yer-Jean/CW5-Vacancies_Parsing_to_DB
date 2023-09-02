@@ -1,3 +1,5 @@
+DATABASE_NAME = 'head_hunter'
+
 HH_API_VACANCIES_URL = 'https://api.hh.ru/vacancies'
 HH_API_EMPLOYERS_URL = 'https://api.hh.ru/employers'
 
