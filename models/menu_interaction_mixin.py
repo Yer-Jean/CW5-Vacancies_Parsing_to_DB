@@ -1,5 +1,6 @@
 class MenuInteractionMixin:
-
+    """Миксин для классов MainMenu и ViewMenu.
+    Выводит пункты меню и получает выбор от пользователя"""
     @staticmethod
     def menu_interaction(menu: dict) -> str:
         """Печатает доступные опции меню выбора в консоль.

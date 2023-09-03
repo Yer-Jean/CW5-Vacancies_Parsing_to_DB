@@ -6,8 +6,8 @@ from models.exceptions import GetRemoteDataException
 
 
 class HeadHunterAPI:
-
-    def get_data(self, url, **params) -> list[dict] | None:
+    """Класс для получения данных с сайта hh.ru используя API"""
+    def get_data(self, url: str, **params) -> list[dict] | None:
         """Метод возвращает список записей в зависимости от параметров params
         используя HeadHunter API. Возвращает список словарей с полученными записями"""
         data: list[dict] = []
@@ -23,7 +23,7 @@ class HeadHunterAPI:
                 return None
 
             if start:
-                num_of_pages: int = 1  # response['pages'] # Получаем количество страниц найденных записей
+                num_of_pages: int = response['pages']  # Получаем количество страниц найденных записей
                 num_of_items: int = response['found']  # Получаем общее количество найденных записей
                 if num_of_items == 0:  # Если не найдена ни одна компаний, то возвращаем None
                     return None
@@ -68,7 +68,3 @@ class HeadHunterAPI:
 
         # Возвращаем словарь с данными, если не возникло каких-либо ошибок
         return data
-
-
-if __name__ == '__main__':
-    pass
