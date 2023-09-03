@@ -77,7 +77,7 @@ class ViewMenu(MenuInteractionMixin):
         """Метод получает список всех вакансий, в названии которых содержатся слова
         из запроса введенного пользователем. Затем выводит этот список на печать."""
         search_string = input('\nВведите запрос для поиска вакансий\n'
-                              'Поиск осуществляется в названии вакансии и в её требованиях\n')
+                              'Поиск осуществляется в названии вакансии и в требованиях для неё\n')
         try:
             data: list = DBManager.get_vacancies_with_keyword(self.cursor, search_string)
         except SQLDataException as err:
